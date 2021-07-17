@@ -11,11 +11,12 @@ class Draggable {
     this.h = h;
     this.offsetX = 0;
     this.offsetY = 0;
+    this.cornerOffset = w/2;
   }
 
   over() {
     // Is mouse over object
-    if (mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) {
+    if (mouseX > this.x - this.cornerOffset && mouseX < this.x - this.cornerOffset + this.w && mouseY > this.y - this.cornerOffset && mouseY < this.y + this.h - this.cornerOffset) {
       this.rollover = true;
     } else {
       this.rollover = false;
@@ -49,13 +50,14 @@ class Draggable {
       fill("#000000CC");
     }
     noStroke();
+    rectMode(CENTER);
     rect(this.x, this.y, this.w, this.h);
   }
 
   pressed() {
     // Did I click on the rectangle?
-    if (mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) {
-      this.dragging = true;
+    if (mouseX > this.x - this.cornerOffset && mouseX < this.x - this.cornerOffset + this.w && mouseY > this.y - this.cornerOffset && mouseY < this.y + this.h - this.cornerOffset) {
+        this.dragging = true;
       // If so, keep track of relative location of click to corner of rectangle
       this.offsetX = this.x - mouseX;
     //   this.offsetY = this.y - mouseY;

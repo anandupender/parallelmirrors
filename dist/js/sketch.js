@@ -1,7 +1,7 @@
 const canvasWidth = 1000;
 const canvasHeight = 600;
 
-var distBetweenMirrors = 150;
+var distBetweenMirrors = 250;
 let mirror1Pos = {x:canvasWidth/2 - distBetweenMirrors/2}
 let mirror2Pos = {x:canvasWidth/2 + distBetweenMirrors/2}
 var mirrorHeight = 200;
@@ -10,6 +10,8 @@ var yOffset = 150;
 const lineWidthL = 4;
 const lineWidthM = 2;
 const lineWidthS = 1;
+
+let numReflections = 2;
 
 let object;
 const objectSize = 40;
@@ -28,7 +30,6 @@ function setup() {
 
     drawMirrors();
     drawBox();
-
 
     object.over();
     var newPos = object.update({minX:mirror1Pos.x + objectSize/2,maxX:mirror2Pos.x - objectSize/2});
@@ -59,20 +60,49 @@ function setup() {
     square(viewerPos.x, viewerPos.y, viewerSize);
 }
 
+function getReflectionPoint(x1, numReflections,iter){
+    console.log(numReflections, iter)
+    let retVal;
+    if(iter == 0){
+        retVal = (mirrorHeight*(Math.pow(x1,(iter+1)))/2)/(x1 + (distBetweenMirrors*(numReflections - 1/2)))
+    }else{
+        retVal = (mirrorHeight*(Math.pow(x1,(iter+1)))*(distBetweenMirrors*iter)/2)/(x1 + (distBetweenMirrors*(numReflections - 1/2)))
+    }
+    console.log(retVal);
+    return retVal;
+}
+
 function drawRays(){
-    strokeWeight(lineWidthM);
-    stroke('#000000');
-    noFill();
 
-    // Mirror 1 reflection
-    let reflectionPoint = {x: canvasWidth/2 - distBetweenMirrors/2, y: (viewerPos.y - objectPos.y)/2 + yOffset + mirrorHeight/2};
-    line(objectPos.x,objectPos.y, reflectionPoint.x, reflectionPoint.y);
-    line(reflectionPoint.x,reflectionPoint.y, viewerPos.x, viewerPos.y);
+    var prevYVal = 0;
 
-    // Mirror 2 reflection
-    let reflectionPoint2 = {x: canvasWidth/2 + distBetweenMirrors/2, y: (viewerPos.y - objectPos.y)/2 + yOffset + mirrorHeight/2};
-    line(objectPos.x,objectPos.y, reflectionPoint2.x, reflectionPoint2.y);
-    line(reflectionPoint2.x,reflectionPoint2.y, viewerPos.x, viewerPos.y);
+    for (i = 0; i < numReflections + 1 ; i++){
+        strokeWeight(lineWidthM);
+        stroke('#000000');
+        noFill();
+
+        var point1 = {x:0,y:0};
+        var point2 = {x:0,y:0};
+        if(i == 0){
+            // beginning line
+            point1 = objectPos;
+            point2.y = getReflectionPoint((objectPos.x - mirror1Pos.x),numReflections,i) + yOffset + mirrorHeight/2;
+            point2.x = canvasWidth/2 - distBetweenMirrors/2;
+        } else if(i == numReflections){
+            // ending line
+            point1.x = ((i % 2 != 0) ? canvasWidth/2 - distBetweenMirrors/2 : canvasWidth/2 + distBetweenMirrors/2);
+            point1.y = getReflectionPoint((objectPos.x - mirror1Pos.x),numReflections,i) + yOffset + mirrorHeight/2;
+            point2 = viewerPos;
+        }else{
+            //middle line
+            point1 = {x: ((i % 2 != 0) ? canvasWidth/2 - distBetweenMirrors/2 : canvasWidth/2 + distBetweenMirrors/2), y: 0};
+            point1.y = prevYVal;
+            point2 = {x: ((i % 2 == 0) ? canvasWidth/2 - distBetweenMirrors/2 : canvasWidth/2 + distBetweenMirrors/2), y: 0};
+            point2.y = getReflectionPoint((objectPos.x - mirror1Pos.x),numReflections,i) + yOffset + mirrorHeight/2;
+        }
+        prevYVal = point2.y;
+        line(point1.x,point1.y,point2.x,point2.y);
+    }
 
     // Virtual Object 1
     noStroke();
@@ -80,8 +110,13 @@ function drawRays(){
     rectMode(CENTER);
     square(mirror1Pos.x - (objectPos.x - mirror1Pos.x), objectPos.y, objectSize);
 
-    // Virtual Object 1
-    square(mirror2Pos.x + (mirror2Pos.x - objectPos.x), objectPos.y, objectSize);
+    // // Mirror 2 reflection
+    // let reflectionPoint2 = {x: canvasWidth/2 + distBetweenMirrors/2, y: (viewerPos.y - objectPos.y)/2 + yOffset + mirrorHeight/2};
+    // line(objectPos.x,objectPos.y, reflectionPoint2.x, reflectionPoint2.y);
+    // line(reflectionPoint2.x,reflectionPoint2.y, viewerPos.x, viewerPos.y);
+
+    // Virtual Object 2
+    // square(mirror2Pos.x + (mirror2Pos.x - objectPos.x), objectPos.y, objectSize);
 }
 
 function mousePressed() {
