@@ -1,0 +1,53 @@
+{
+  "name": "brilliant-exercise",
+  "version": "1.0.0",
+  "description": "Take home exercise",
+  "main": "gulpfile.js",
+  "paths": {
+    "generic": {
+      "src": "./src",
+      "dest": "./dist"
+    },
+    "markup": {
+      "src": "./src/*.html",
+      "dest": "./dist"
+    },
+    "files": {
+      "src": "./src/data/*.*",
+      "dest": "./dist/data"
+    },
+    "styles": {
+      "src": "./src/sass/*.scss",
+      "dest": "./dist/css"
+    },
+    "scripts": {
+      "src": "./src/js/*.js",
+      "dest": "./dist/js"
+    },
+    "libScripts": {
+      "src": "./src/js-lib/*.js",
+      "dest": "./dist/js-lib"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.27.4",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.0.0",
+    "gulp-uglify-es": "^2.0.0",
+    "node-sass": "^6.0.1",
+    "sass": "^1.35.2"
+  },
+  "dependencies": {
+    "p5": "^1.4.0"
+  }
+}
