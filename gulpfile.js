@@ -18,6 +18,7 @@ var concat = require("gulp-concat");
 
 // Scripts
 const uglify = require("gulp-uglify-es").default;
+const babel = require("gulp-babel");
 
 // Paths
 const { paths } = require("./package.json");
@@ -50,7 +51,8 @@ const styles = () =>
 // Minify scripts and place in ./dist/js
 const scripts = () =>
   src(paths.scripts.src)
-    .pipe(dest(paths.scripts.dest));
+  .pipe(babel({presets: ['@babel/preset-env'] })) 
+  .pipe(dest(paths.scripts.dest));
     
 // Lib Scripts
 const libScripts = () =>

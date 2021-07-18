@@ -12,7 +12,9 @@ const lineWidthL = 4;
 const lineWidthM = 2;
 const lineWidthS = 1;
 
-let numReflections = 5;
+let numReflections = 1;
+let numImages = 6;
+let imagePositions = [];
 
 let object;
 const objectSize = 40;
@@ -27,7 +29,7 @@ function setup() {
   }
   
   function draw() {
-    background(220);
+    background(255);
 
     drawMirrors();
     drawBox();
@@ -37,8 +39,7 @@ function setup() {
     objectPos = newPos;
     object.show();
 
-
-    drawRays();
+    drawRaysAndImages();
     drawViewer();
   }
 
@@ -66,7 +67,7 @@ function calcRatio(y0, x0, x1, x2, n){
     return retVal;
 }
 
-function drawRays(){
+function drawRaysAndImages(){
 
     var prevYVal = 0;
     let numReflectionsIsEven = numReflections % 2;
@@ -74,12 +75,11 @@ function drawRays(){
     let distBetweenObjAndMirror = objectPos.x - mirror1Pos.x;
     if (!numReflectionsIsEven) distBetweenObjAndMirror = distBetweenMirrors - distBetweenObjAndMirror;
     let ratio = calcRatio(mirrorHeight/2,distBetweenMirrors,distBetweenObjAndMirror,distBetweenMirrors/2,numReflections);
-    console.log(ratio);
 
     let yRepeatHeight = ratio * distBetweenMirrors;
 
-
-    for (i = 0; i < numReflections + 1 ; i++){
+    // Draw Rays
+    for (var i = 0; i < numReflections + 1 ; i++){
         strokeWeight(lineWidthM);
         stroke('#000000');
         noFill();
@@ -97,7 +97,7 @@ function drawRays(){
             point1.y = prevYVal;
             point2 = viewerPos;
         }else{
-            //middle line
+            //middle lines
             point1 = {x: ((i % 2 == numReflectionsIsEven) ? mirrorCenter - distBetweenMirrors/2 : mirrorCenter + distBetweenMirrors/2), y: 0};
             point1.y = prevYVal;
             point2 = {x: ((i % 2 != numReflectionsIsEven) ? mirrorCenter - distBetweenMirrors/2 : mirrorCenter + distBetweenMirrors/2), y: 0};
@@ -107,41 +107,42 @@ function drawRays(){
         line(point1.x,point1.y,point2.x,point2.y);
     }
 
-    for (i = 0; i < 6 ; i++){
+    // Draw Images
+    for (var i = 0; i < numImages ; i++){
         let numReflectionsIsEven = i % 2;
         let distBetweenObjAndMirror = objectPos.x - mirror1Pos.x;
         if (numReflectionsIsEven) distBetweenObjAndMirror = distBetweenMirrors - distBetweenObjAndMirror;
 
         let x = mirror1Pos.x - (distBetweenObjAndMirror + distBetweenMirrors*i);
 
-        // Virtual Object 1
         if(i == numReflections - 1){
-            fill('#000000AA');
             stroke("#000000");
-            line(viewerPos.x,viewerPos.y,x,objectPos.y)
+            line(viewerPos.x,viewerPos.y,x,objectPos.y);
+            fill('#000000FF');
             noStroke();
+            square(x, objectPos.y, objectSize);
         }
         else{
             fill('#00000022');
             noStroke();
+            square(x, objectPos.y, objectSize);
         }
-        rectMode(CENTER);
-
-        square(x, objectPos.y, objectSize);
+        imagePositions[i] = x;
     }
+}
 
-
-    // // Mirror 2 reflection
-    // let reflectionPoint2 = {x: mirrorCenter + distBetweenMirrors/2, y: (viewerPos.y - objectPos.y)/2 + yOffset + mirrorHeight/2};
-    // line(objectPos.x,objectPos.y, reflectionPoint2.x, reflectionPoint2.y);
-    // line(reflectionPoint2.x,reflectionPoint2.y, viewerPos.x, viewerPos.y);
-
-    // Virtual Object 2
-    // square(mirror2Pos.x + (mirror2Pos.x - objectPos.x), objectPos.y, objectSize);
+function checkImagesClicked(){
+    for (var i = 0; i < numImages ; i++){
+        if (mouseX > imagePositions[i] - objectSize/2 && mouseX < imagePositions[i] + objectSize/2 && mouseY > objectPos.y - objectSize/2 && mouseY < objectPos.y + objectSize/2) {
+            console.log(i);
+            numReflections = i + 1;
+        }
+    }
 }
 
 function mousePressed() {
     object.pressed();
+    checkImagesClicked();
   }
   
   function mouseReleased() {
