@@ -1,10 +1,10 @@
 // Click and Drag an object
-// Daniel Shiffman <http://www.shiffman.net>
+// Borrowed and adapted from Daniel Shiffman by Anand Upender
 
 class Draggable {
   constructor(x, y, w, h) {
-    this.dragging = false; // Is the object being dragged?
-    this.rollover = false; // Is the mouse over the ellipse?
+    this.dragging = false; 
+    this.rollover = false;
     this.x = x;
     this.y = y;
     this.w = w;
@@ -42,7 +42,6 @@ class Draggable {
     stroke(0);
     // Different fill based on state
     if (this.dragging) {
-      //fill(50);
       fill("#000000FF");
     } else if (this.rollover) {
         fill("#000000FF")
@@ -51,21 +50,18 @@ class Draggable {
     }
     noStroke();
     rectMode(CENTER);
-    rect(this.x, this.y, this.w, this.h);
+    tint(255, 255);
+    image(objectImage, this.x - this.w/2, this.y - this.w/2, this.h, this.w);
   }
 
   pressed() {
-    // Did I click on the rectangle?
     if (mouseX > this.x - this.cornerOffset && mouseX < this.x - this.cornerOffset + this.w && mouseY > this.y - this.cornerOffset && mouseY < this.y + this.h - this.cornerOffset) {
         this.dragging = true;
-      // If so, keep track of relative location of click to corner of rectangle
-      this.offsetX = this.x - mouseX;
-    //   this.offsetY = this.y - mouseY;
+        this.offsetX = this.x - mouseX;
     }
   }
 
   released() {
-    // Quit dragging
     this.dragging = false;
   }
 }

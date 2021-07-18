@@ -1,1 +1,1 @@
-body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden}
+body{margin:0;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:left;overflow:hidden;margin-left:100px;font-family:Arial,Helvetica,sans-serif}h2{max-width:720px}h4{margin:8px 0}p{margin:0;font-size:14px}

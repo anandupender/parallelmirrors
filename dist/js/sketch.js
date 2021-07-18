@@ -1,8 +1,10 @@
 "use strict";
 
-var canvasWidth = 1000;
-var canvasHeight = 400;
-var distBetweenMirrors = 160;
+// CANVAS CONSTANTS
+var canvasWidth = 1200;
+var canvasHeight = 400; // MIRROR CONSTANTS
+
+var distBetweenMirrors = 180;
 var mirrorCenter = canvasWidth / 1.2;
 var mirror1Pos = {
   x: mirrorCenter - distBetweenMirrors / 2
@@ -11,24 +13,33 @@ var mirror2Pos = {
   x: mirrorCenter + distBetweenMirrors / 2
 };
 var mirrorHeight = 200;
-var yOffset = 100;
+var yOffset = 100; // LINE CONSTANTS
+
 var lineWidthL = 4;
 var lineWidthM = 2;
 var lineWidthS = 1;
 var numReflections = 1;
 var numImages = 6;
-var imagePositions = [];
+var imagePositions = []; // IMAGE CONSTANTS
+
 var object;
-var objectSize = 40;
+var objectSize = 45;
 var objectPos = {
   x: mirrorCenter,
   y: yOffset + mirrorHeight / 2
 };
-var viewerSize = 30;
+var viewerSize = 80;
 var viewerPos = {
   x: mirrorCenter,
   y: yOffset + mirrorHeight
 };
+var viewerImage;
+var objectImage;
+
+function preload() {
+  viewerImage = loadImage('img/face.png');
+  objectImage = loadImage('img/trophy.png');
+}
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
@@ -52,7 +63,7 @@ function draw() {
 
 function drawMirrors() {
   strokeWeight(lineWidthL);
-  stroke('#0000FF');
+  stroke('#1757D7');
   strokeCap(SQUARE);
   line(mirror1Pos.x, yOffset, mirror1Pos.x, yOffset + mirrorHeight);
   line(mirror2Pos.x, yOffset, mirror2Pos.x, yOffset + mirrorHeight);
@@ -60,13 +71,12 @@ function drawMirrors() {
 
 function drawBox() {
   stroke('#000000');
-  line(mirrorCenter - distBetweenMirrors / 2, yOffset, mirrorCenter + distBetweenMirrors / 2, yOffset);
+  line(mirrorCenter - distBetweenMirrors / 2 - lineWidthL / 2, yOffset + lineWidthL / 2, mirrorCenter + distBetweenMirrors / 2 + lineWidthL / 2, yOffset + lineWidthL / 2);
 }
 
 function drawViewer() {
-  fill('#FF0000');
-  rectMode(CENTER);
-  square(viewerPos.x, viewerPos.y, viewerSize);
+  tint(255, 255);
+  image(viewerImage, viewerPos.x - viewerSize / 2, viewerPos.y - viewerSize / 2, viewerSize, viewerSize);
 }
 
 function calcRatio(y0, x0, x1, x2, n) {
@@ -133,17 +143,16 @@ function drawRaysAndImages() {
     var x = mirror1Pos.x - (_distBetweenObjAndMirror + distBetweenMirrors * i);
 
     if (i == numReflections - 1) {
-      stroke("#000000");
+      stroke("#EEA71F");
       line(viewerPos.x, viewerPos.y, x, objectPos.y);
-      fill('#000000FF');
-      noStroke();
-      square(x, objectPos.y, objectSize);
+      tint(255, 180);
     } else {
       fill('#00000022');
       noStroke();
-      square(x, objectPos.y, objectSize);
+      tint(255, 110);
     }
 
+    image(objectImage, x - objectSize / 2, objectPos.y - objectSize / 2, objectSize, objectSize);
     imagePositions[i] = x;
   }
 }

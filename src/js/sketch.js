@@ -1,13 +1,16 @@
-const canvasWidth = 1000;
+// CANVAS CONSTANTS
+const canvasWidth = 1200;
 const canvasHeight = 400;
 
-var distBetweenMirrors = 160;
+// MIRROR CONSTANTS
+var distBetweenMirrors = 180;
 let mirrorCenter = canvasWidth/1.2;
 let mirror1Pos = {x:mirrorCenter - distBetweenMirrors/2}
 let mirror2Pos = {x:mirrorCenter + distBetweenMirrors/2}
 var mirrorHeight = 200;
 var yOffset = 100;
 
+// LINE CONSTANTS
 const lineWidthL = 4;
 const lineWidthM = 2;
 const lineWidthS = 1;
@@ -16,50 +19,58 @@ let numReflections = 1;
 let numImages = 6;
 let imagePositions = [];
 
+// IMAGE CONSTANTS
 let object;
-const objectSize = 40;
+const objectSize = 45;
 let objectPos = {x:mirrorCenter,y:yOffset+mirrorHeight/2}
-
-const viewerSize = 30;
+const viewerSize = 80;
 let viewerPos = {x:mirrorCenter,y:yOffset+mirrorHeight}
+let viewerImage;
+let objectImage;
+
+function preload() {
+    viewerImage = loadImage('img/face.png');
+    objectImage = loadImage('img/trophy.png');
+}
+
 
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
     object = new Draggable(objectPos.x, objectPos.y, objectSize, objectSize);
-  }
+}
   
-  function draw() {
+function draw() {
     background(255);
 
     drawMirrors();
     drawBox();
 
     object.over();
+    
     var newPos = object.update({minX:mirror1Pos.x + objectSize/2,maxX:mirror2Pos.x - objectSize/2});
     objectPos = newPos;
     object.show();
 
     drawRaysAndImages();
     drawViewer();
-  }
+}
 
-  function drawMirrors(){
-      strokeWeight(lineWidthL);
-      stroke('#0000FF');
-      strokeCap(SQUARE);
-      line(mirror1Pos.x, yOffset, mirror1Pos.x, yOffset + mirrorHeight);
-      line(mirror2Pos.x, yOffset, mirror2Pos.x, yOffset + mirrorHeight);
-  }
+function drawMirrors(){
+    strokeWeight(lineWidthL);
+    stroke('#1757D7');
+    strokeCap(SQUARE);
+    line(mirror1Pos.x, yOffset, mirror1Pos.x, yOffset + mirrorHeight);
+    line(mirror2Pos.x, yOffset, mirror2Pos.x, yOffset + mirrorHeight);
+}
 
-  function drawBox(){
+function drawBox(){
     stroke('#000000');
-    line(mirrorCenter - distBetweenMirrors/2, yOffset, mirrorCenter + distBetweenMirrors/2, yOffset)
-  }
+    line(mirrorCenter - distBetweenMirrors/2 - lineWidthL/2, yOffset + lineWidthL/2, mirrorCenter + distBetweenMirrors/2 + lineWidthL/2, yOffset + lineWidthL/2)
+}
 
-  function drawViewer(){
-    fill('#FF0000');
-    rectMode(CENTER);
-    square(viewerPos.x, viewerPos.y, viewerSize);
+function drawViewer(){
+    tint(255, 255);
+    image(viewerImage, viewerPos.x - viewerSize/2, viewerPos.y - viewerSize/2, viewerSize, viewerSize);
 }
 
 function calcRatio(y0, x0, x1, x2, n){
@@ -68,7 +79,6 @@ function calcRatio(y0, x0, x1, x2, n){
 }
 
 function drawRaysAndImages(){
-
     var prevYVal = 0;
     let numReflectionsIsEven = numReflections % 2;
 
@@ -116,17 +126,17 @@ function drawRaysAndImages(){
         let x = mirror1Pos.x - (distBetweenObjAndMirror + distBetweenMirrors*i);
 
         if(i == numReflections - 1){
-            stroke("#000000");
+            stroke("#EEA71F");
             line(viewerPos.x,viewerPos.y,x,objectPos.y);
-            fill('#000000FF');
-            noStroke();
-            square(x, objectPos.y, objectSize);
+            tint(255, 180);
         }
         else{
             fill('#00000022');
             noStroke();
-            square(x, objectPos.y, objectSize);
+            tint(255, 110);
         }
+        image(objectImage, x - objectSize/2,objectPos.y - objectSize/2, objectSize,objectSize);
+
         imagePositions[i] = x;
     }
 }
@@ -143,8 +153,8 @@ function checkImagesClicked(){
 function mousePressed() {
     object.pressed();
     checkImagesClicked();
-  }
+}
   
-  function mouseReleased() {
+function mouseReleased() {
     object.released();
-  }
+}

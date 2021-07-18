@@ -16,6 +16,10 @@
       "src": "./src/data/*.*",
       "dest": "./dist/data"
     },
+    "images": {
+      "src": "./src/img/*.*",
+      "dest": "./dist/img"
+    },
     "styles": {
       "src": "./src/sass/*.scss",
       "dest": "./dist/css"

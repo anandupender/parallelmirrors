@@ -6,7 +6,6 @@
 const { src, dest, watch, series, parallel } = require("gulp");
 const browserSync = require("browser-sync").create();
 const del = require("del");
-const rename = require("gulp-rename");
 
 // Markup
 const htmlmin = require("gulp-htmlmin");
@@ -17,7 +16,6 @@ const cleanCSS = require("gulp-clean-css");
 var concat = require("gulp-concat");
 
 // Scripts
-const uglify = require("gulp-uglify-es").default;
 const babel = require("gulp-babel");
 
 // Paths
@@ -47,6 +45,11 @@ const styles = () =>
     .pipe(dest(paths.styles.dest))
     .pipe(browserSync.stream());
 
+
+// Images
+// Copy assets to ./dist/
+const copyImages = () => src(paths.images.src).pipe(dest(paths.images.dest));
+
 // Scripts
 // Minify scripts and place in ./dist/js
 const scripts = () =>
@@ -61,7 +64,7 @@ src(paths.libScripts.src)
 
 
 // Build
-const build = parallel(markup, styles, scripts, libScripts);
+const build = parallel(markup, styles, scripts, libScripts, copyImages);
 exports.build = series(clean, build);
 exports.build.description = "Clean, build ";
 
